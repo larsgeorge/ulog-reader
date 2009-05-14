@@ -46,7 +46,7 @@ public class UlogReader {
     System.out.println("size: " + size);
     byte[] res = new byte[size];
     in.readFully(res);
-    return new Command(res);
+    return new Command(res, timestamp, sid);
   }
   
   public boolean hasNext() throws IOException {

@@ -45,6 +45,8 @@ public class Command {
   public final static int TTCMDREPL      = 0xa0; /* ID of repl command */
 
   private int command = -1;
+  private long timestamp = -1;
+  private int sid = -1;
   private String name = null;
   private Map<String, String> elements = null;
   
@@ -52,9 +54,13 @@ public class Command {
    * Parses the given data.
    * 
    * @param data  The data in its raw format.
+   * @param sid  The session ID.
+   * @param timestamp  The timestamp when the event happened.
    * @throws IOException When reading the data fails.
    */
-  public Command(byte[] data) throws IOException {
+  public Command(byte[] data, long timestamp, int sid) throws IOException {
+    this.timestamp = timestamp;
+    this.sid = sid;
     DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
     int magic = in.readUnsignedByte();
     if (magic != TTMAGICNUM) throw new IOException("Wrong magic header.");
@@ -109,6 +115,34 @@ public class Command {
    */
   public void setCommand(int command) {
     this.command = command;
+  }
+
+  /**
+   * @return Returns the timestamp.
+   */
+  public long getTimestamp() {
+    return timestamp;
+  }
+
+  /**
+   * @param timestamp The timestamp to set.
+   */
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
+  }
+
+  /**
+   * @return Returns the sid.
+   */
+  public int getSid() {
+    return sid;
+  }
+
+  /**
+   * @param sid The sid to set.
+   */
+  public void setSid(int sid) {
+    this.sid = sid;
   }
 
   /**
