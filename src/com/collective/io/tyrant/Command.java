@@ -48,6 +48,7 @@ public class Command {
   private long timestamp = -1;
   private int sid = -1;
   private String name = null;
+  private int size = -1;
   private Map<String, String> elements = null;
   
   /**
@@ -56,11 +57,13 @@ public class Command {
    * @param data  The data in its raw format.
    * @param sid  The session ID.
    * @param timestamp  The timestamp when the event happened.
+   * @param size  Total size of the command including headers.
    * @throws IOException When reading the data fails.
    */
-  public Command(byte[] data, long timestamp, int sid) throws IOException {
+  public Command(byte[] data, long timestamp, int sid, int size) throws IOException {
     this.timestamp = timestamp;
     this.sid = sid;
+    this.setSize(size);
     DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
     int magic = in.readUnsignedByte();
     if (magic != TTMAGICNUM) throw new IOException("Wrong magic header.");
@@ -69,11 +72,20 @@ public class Command {
       case TTCMDMISC:
         parseCommandMisc(in);
         break;
-
+      case TTCMDPUT:
+        name = "put";
+        parseCommandPut(in);
+        break;
+      case TTCMDPUTKEEP:
+        name = "putkeep";
+        parseCommandPut(in);
+        break;
       default:
         System.out.println("Found unhandled command: " + Integer.toHexString(command));
         break;
     }
+    in.close();
+    in = null;
   }
 
   /**
@@ -101,6 +113,25 @@ public class Command {
     }
     // int rv = 
     in.readUnsignedByte(); // unused
+  }
+
+  /**
+   * Parses the put/putkeep command.
+   * 
+   * @param in  The stream to read from.
+   * @throws IOException  When reading the data fails.
+   */
+  private void parseCommandPut(DataInputStream in) throws IOException {
+    int ksize = in.readInt();
+    int vsize = in.readInt();
+    byte[] key = new byte[ksize];
+    in.read(key);
+    byte[] value = new byte[vsize];
+    in.read(value);
+    // int err = 
+    in.readUnsignedByte(); // unused
+    elements = new LinkedHashMap<String, String>(1);
+    elements.put(new String(key), new String(value));
   }
 
   /**
@@ -143,6 +174,20 @@ public class Command {
    */
   public void setSid(int sid) {
     this.sid = sid;
+  }
+
+  /**
+   * @param size The size to set.
+   */
+  public void setSize(int size) {
+    this.size = size;
+  }
+
+  /**
+   * @return Returns the size.
+   */
+  public int getSize() {
+    return size;
   }
 
   /**
