@@ -11,10 +11,15 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Wraps each command into a handy class.
  */
 public class Command {
+
+  static final Log LOG = LogFactory.getLog(Command.class);
 
   public final static int TTMAGICNUM     = 0xc8; /* magic number of each command */
   public final static int TTCMDPUT       = 0x10; /* ID of put command */
@@ -81,7 +86,7 @@ public class Command {
         parseCommandPut(in);
         break;
       default:
-        System.out.println("Found unhandled command: " + Integer.toHexString(command));
+        if (LOG.isDebugEnabled()) LOG.debug("constructor: Found unhandled command -> 0x" + Integer.toHexString(command));
         break;
     }
     in.close();
@@ -100,6 +105,7 @@ public class Command {
     byte[] bname = new byte[nsize];
     in.read(bname);
     name = new String(bname);
+    if (LOG.isDebugEnabled()) LOG.debug("parseCommandMisc: name -> " + name);
     elements = new LinkedHashMap<String, String>(lsize / 2);
     // iterate over list elements
     for (int i = 0; i < lsize / 2; i++) {
@@ -111,6 +117,7 @@ public class Command {
       in.read(value);
       elements.put(new String(key), new String(value));
     }
+    if (LOG.isDebugEnabled()) LOG.debug("parseCommandMisc: elements.size -> " + elements.size());
     // int rv = 
     in.readUnsignedByte(); // unused
   }
@@ -132,6 +139,7 @@ public class Command {
     in.readUnsignedByte(); // unused
     elements = new LinkedHashMap<String, String>(1);
     elements.put(new String(key), new String(value));
+    if (LOG.isDebugEnabled()) LOG.debug("parseCommandPut: elements -> " + elements);
   }
 
   /**

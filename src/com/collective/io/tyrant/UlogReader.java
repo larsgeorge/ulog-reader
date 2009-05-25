@@ -1,6 +1,8 @@
 /* File:    UlogReader.java
  * Created: May 13, 2009
  * Author:  Lars George
+ *
+ * Copyright (c) 2009 larsgeorge.com
  */
 
 package com.collective.io.tyrant;
@@ -59,13 +61,13 @@ public class UlogReader {
     if (magic != TCULMAGICNUM) throw new IOException("Wrong magic header.");
     long timestamp = in.readLong();
     pos += 8;
-    if (LOG.isDebugEnabled()) LOG.debug("ts: " + timestamp + ", date: " + new Date(timestamp / 1000));
+    if (LOG.isDebugEnabled()) LOG.debug("next: ts -> " + timestamp + ", date -> " + new Date(timestamp / 1000));
     int sid = in.readInt();
     pos += 4;
-    if (LOG.isDebugEnabled()) LOG.debug("sid: " + sid);
+    if (LOG.isDebugEnabled()) LOG.debug("next: sid -> " + sid);
     int size = in.readInt();
     pos += 4;
-    if (LOG.isDebugEnabled()) LOG.debug("size: " + size);
+    if (LOG.isDebugEnabled()) LOG.debug("next: size -> " + size);
     byte[] res = new byte[size];
     in.readFully(res);
     pos += size;
@@ -86,11 +88,11 @@ public class UlogReader {
       if (magic != TCULMAGICNUM) throw new IOException("Wrong magic header.");
     }
     long timestamp = dis.readLong();
-    if (LOG.isDebugEnabled()) LOG.debug("ts: " + timestamp + ", date: " + new Date(timestamp / 1000));
+    if (LOG.isDebugEnabled()) LOG.debug("next: ts -> " + timestamp + ", date -> " + new Date(timestamp / 1000));
     int sid = dis.readInt();
-    if (LOG.isDebugEnabled()) LOG.debug("sid: " + sid);
+    if (LOG.isDebugEnabled()) LOG.debug("next: sid -> " + sid);
     int size = dis.readInt();
-    if (LOG.isDebugEnabled()) LOG.debug("size: " + size);
+    if (LOG.isDebugEnabled()) LOG.debug("next: size -> " + size);
     byte[] res = new byte[size];
     dis.readFully(res);
     return new Command(res, timestamp, sid, size + 1 + 8 + 4 + 4);
