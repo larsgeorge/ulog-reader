@@ -1,7 +1,9 @@
 /* File:    Command.java
  * Created: May 14, 2009
  * Author:  Lars George
- */
+ * 
+  * Copyright (c) 2009 larsgeorge.com
+*/
 
 package com.collective.io.tyrant;
 
