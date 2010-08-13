@@ -1,5 +1,5 @@
 ulog-reader
-===========
+-----------
 
 This (rather loose) collection of Java classes provides a Tokyo Tyrant/Tokyo Cabinet update log (ulog) parser. There is also a parser for Redis AOF files. In addition you can find custom Hadoop InputFormat classes that wrap these readers into what is needed to use them from within MapReduce jobs.
 
